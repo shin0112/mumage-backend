@@ -1,0 +1,32 @@
+# DATABASE
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:~/test
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    open-in-view: false
+
+  h2:
+    console:
+      enabled: true
+      path: /console
+
+  # Swagger
+  springdoc:
+    packages-to-scan: com.colabear754.springdoc_example.controllers
+    default-consumes-media-type: application/json;charset=UTF-8
+    default-produces-media-type: application/json;charset=UTF-8
+    swagger-ui:
+      path: /
+      disable-swagger-default-url: true
+      display-request-duration: true
+      operations-sorter: alpha
