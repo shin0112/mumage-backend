@@ -43,10 +43,10 @@ public class RestControllerAdvisor {
         return new ResponseEntity<>(messageDto, headers, HttpStatus.BAD_REQUEST);
     }
 
-//    @ExceptionHandler(value = CustomException.class)
-//    public ResponseEntity<ExceptionResponseDto> handlerCustomeException(CustomException customException) {
-//        log.warn(customException.getMessage());
-//        return ResponseEntity.status(customException.getHttpStatus()).body(new ExceptionResponseDto(customException.getErrCode()));
-//    }
+    @ExceptionHandler(value = CustomException.class)
+    public ResponseEntity<ExceptionResponseDto> handlerCustomeException(CustomException customException) {
+        log.warn(customException.getMessage());
+        return ResponseEntity.status(customException.getHttpStatus()).body(new ExceptionResponseDto(customException.getErrCode()));
+    }
 
 }
