@@ -8,13 +8,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberJoinDto {
+public class UserJoinDto {
 
     @NotBlank @Size(min = 5, max = 15) @Pattern(regexp = "^[0-9a-zA-Z]*$")
-    private String memberId;
+    private String joinId;
     @NotBlank @Size(min = 8, max = 15) @Pattern(regexp = "^[0-9a-zA-Z!@#$%^&+=]*$")
     private String password;
-    @NotBlank @Size(min = 2, max = 10) @Pattern(regexp = "^[a-zA-Z가-힣]*$")
+    @NotBlank @Size(min = 2, max = 10) @Pattern(regexp = "^[a-zA-Z]+|[가-힣]+$")
     private String name;
     @NotBlank @Size(min = 1, max = 15) @Pattern(regexp = "^[0-9a-zA-Z가-힣]*$")
     private String nickname;
