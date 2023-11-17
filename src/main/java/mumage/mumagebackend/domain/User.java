@@ -3,6 +3,7 @@ package mumage.mumagebackend.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @Entity
 @NoArgsConstructor
@@ -13,13 +14,13 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 15, unique = true)
     private String loginId;
     @Column(nullable = false, length = 15)
     private String password;
     @Column(nullable = false, length = 10)
     private String name;
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 15, unique = true)
     private String nickname;
     @Column
     private String profileUrl;

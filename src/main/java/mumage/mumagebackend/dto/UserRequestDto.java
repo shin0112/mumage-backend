@@ -14,12 +14,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserRequestDto {
 
-    @Size(min = 8, max = 15) @Pattern(regexp = "^[0-9a-zA-Z!@#$%^&+=]*$")
+    @NotBlank @Size(min = 8, max = 15) @Pattern(regexp = "^[0-9a-zA-Z!@#$%^&+=]*$")
     private String password;
-    @Size(min = 2, max = 10) @Pattern(regexp = "^[a-zA-Z]+|[가-힣]+$")
+    @NotBlank @Size(min = 2, max = 10) @Pattern(regexp = "^[a-zA-Z]+|[가-힣]+$")
     private String name;
-    @Size(min = 1, max = 15) @Pattern(regexp = "^[0-9a-zA-Z가-힣]*$")
+    @NotBlank @Size(min = 1, max = 15) @Pattern(regexp = "^[0-9a-zA-Z가-힣]*$")
     private String nickname;
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
     private String email;
     private String profileUrl;
 
