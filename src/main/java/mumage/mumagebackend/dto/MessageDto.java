@@ -1,5 +1,6 @@
 package mumage.mumagebackend.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -13,6 +14,13 @@ public class MessageDto {
         this.status = 404;
         this.message = "접근 실패";
         this.data = null;
+    }
+
+    @Builder
+    public MessageDto(int status, String message, Object data) {
+        this.status = status;
+        this.message = message;
+        this.data = data;
     }
 
     public int getStatus() {
