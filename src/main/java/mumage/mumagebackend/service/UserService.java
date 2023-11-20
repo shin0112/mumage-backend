@@ -156,7 +156,7 @@ public class UserService implements UserDetailsService {
     /*
     특정 회원 조회
      */
-    public Optional<User> findOne(Long memberId) {
+    public Optional<User> findById(Long memberId) {
         return userRepository.findById(memberId);
     }
 
