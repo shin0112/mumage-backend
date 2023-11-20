@@ -1,13 +1,16 @@
 package mumage.mumagebackend.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mumage.mumagebackend.domain.User;
+import mumage.mumagebackend.dto.LoginRequestDto;
+import mumage.mumagebackend.dto.LoginResponseDto;
 import mumage.mumagebackend.dto.MessageDto;
 import mumage.mumagebackend.dto.UserJoinDto;
 import mumage.mumagebackend.dto.UserRequestDto;
 import mumage.mumagebackend.dto.UserResponseDto;
 import mumage.mumagebackend.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,16 +18,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
+import java.security.Principal;
 
 @RestController
+@Slf4j
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping(value = "/signup")
     public ResponseEntity<MessageDto> joinMember(@Valid @RequestBody UserJoinDto userJoinDto) {
@@ -38,6 +39,35 @@ public class UserController {
         messageDto.setMessage("회원 가입 성공");
         messageDto.setData(user);
         return new ResponseEntity<>(messageDto, headers, HttpStatus.OK);
+
+    }
+
+    @PostMapping(value = "/user/login")
+    public ResponseEntity<MessageDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+
+        LoginResponseDto responseDto = userService.login(loginRequestDto);
+        MessageDto messageDto = new MessageDto();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        messageDto.setStatus(HttpStatus.OK.value());
+        messageDto.setMessage("로그인 성공");
+        messageDto.setData(responseDto);
+        return new ResponseEntity<>(messageDto, headers, HttpStatus.OK);
+
+    }
+
+    @PostMapping("/user/logout")
+    public ResponseEntity<MessageDto> logout(@RequestHeader HttpHeaders header) {
+
+        userService.logout(header.getFirst("Authorization"));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        return new ResponseEntity<>(MessageDto.builder()
+                .status(200)
+                .message("로그아웃 성공")
+                .data(null).build(), headers, HttpStatus.OK);
 
     }
 
@@ -93,6 +123,12 @@ public class UserController {
         }
     }
 
+    @GetMapping(value = "/test")
+    public ResponseEntity<String> test(Principal principal) {
+        log.info("principal : " + principal.getName());
+        return new ResponseEntity<>(userService.test(principal), HttpStatus.OK);
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<MessageDto> readUser(@PathVariable Long userId) {
 
@@ -125,7 +161,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/user/{userId}")
-    public ResponseEntity<MessageDto> withdrawMember(@PathVariable Long userId) {
+    public ResponseEntity<MessageDto> withdrawMember(@PathVariable(value = "userId") Long userId) {
 
         MessageDto messageDto = new MessageDto();
         HttpHeaders headers = new HttpHeaders();

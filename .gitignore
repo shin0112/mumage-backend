@@ -35,5 +35,6 @@ out/
 ### VS Code ###
 .vscode/
 
+### Config ###
 application.yml
 application.yaml

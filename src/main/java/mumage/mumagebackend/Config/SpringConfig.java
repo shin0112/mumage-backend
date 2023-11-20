@@ -1,24 +1,26 @@
 package mumage.mumagebackend.Config;
 
-import mumage.mumagebackend.repository.UserRepository;
-import mumage.mumagebackend.service.UserService;
+import jakarta.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SpringConfig {
 
-    private final UserRepository userRepository;
+    private final CustomFilter customFilter;
 
     @Autowired
-    public SpringConfig(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public SpringConfig(CustomFilter customFilter) {
+        this.customFilter = customFilter;
     }
 
     @Bean
-    public UserService memberService() {
-        return new UserService(userRepository);
+    public FilterRegistrationBean<Filter> firstFilterRegister() {
+        FilterRegistrationBean<Filter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(customFilter);
+        return registrationBean;
     }
 
 }
