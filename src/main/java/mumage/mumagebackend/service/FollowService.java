@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mumage.mumagebackend.domain.Follow;
 import mumage.mumagebackend.domain.User;
 import mumage.mumagebackend.dto.FollowListDto;
-import mumage.mumagebackend.repository.FollowRepository;
+import mumage.mumagebackend.repository.FollowsRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +15,7 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class FollowService {
 
-    private final FollowRepository followRepository;
+    private final FollowsRepository followsRepository;
 
     // 누가 누구 팔로우 했는지 follow 생성 후 db에 저장
     @Transactional
@@ -31,43 +31,43 @@ public class FollowService {
         from.getFollowing().add(follow);
         to.getFollower().add(follow);
 
-        followRepository.save(follow); // db에 저장
+        followsRepository.save(follow); // db에 저장
     }
 
     // 팔로우 정보 db에서 삭제
     @Transactional
     public void delete(User from, User to){
-        Follow follow = followRepository.findByFromAndTo(from, to);
+        Follow follow = followsRepository.findByFromAndTo(from, to);
 
         follow.getTo().getFollower().remove(follow); // to의 팔로워에서 이 팔로우 정보를 삭제한다.
         follow.getFrom().getFollowing().remove(follow); // from의 팔로잉에서도 마찬가지
 
-        followRepository.delete(follow);
+        followsRepository.delete(follow);
     }
 
     // 팔로워 목록 반환
     public Set<User> getFollower(Long userId){
-        return followRepository.getFollower(userId);
+        return followsRepository.getFollower(userId);
     }
 
     // 팔로잉 목록 반환
     public Set<User> getFollowing(Long userId){
-        return followRepository.getFollowing(userId);
+        return followsRepository.getFollowing(userId);
     }
 
     // 팔로워 수 반환
     public Long countFollower(User user){
-        return followRepository.countFollower(user.getUserId());
+        return followsRepository.countFollower(user.getUserId());
     }
 
     // 팔로잉 수 반환
     public Long countFollowing(User user){
-        return followRepository.countFollowing(user.getUserId());
+        return followsRepository.countFollowing(user.getUserId());
     }
 
     // from 유저가 to 유저를 팔로잉 중인지 반환
     public boolean isFollowing(User from, User to){
-        Follow follow = followRepository.findByFromAndTo(from, to);
+        Follow follow = followsRepository.findByFromAndTo(from, to);
         return follow != null;
     }
 

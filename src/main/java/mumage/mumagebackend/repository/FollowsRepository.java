@@ -10,9 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
-@Repository
-public interface FollowRepository extends JpaRepository<Follow, Long> {
-
+public interface FollowsRepository extends JpaRepository<Follow, Long> {
     Follow findByFromAndTo(User from, User to); // 팔로워와 팔로잉 유저로 팔로우 정보 찾기
 
     @Query("SELECT f.from From Follow f WHERE f.to.id=:id")

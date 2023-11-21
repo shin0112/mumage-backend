@@ -137,6 +137,7 @@ public class PostsService {
                 .singer(posts.getSong().getSinger())
                 .songName(posts.getSong().getSongName())
                 .trackUrl(posts.getSong().getTrackUrl())
+                .albumName(posts.getSong().getAlbumName())
                 .content(posts.getContent())
                 .imageUrl(posts.getImageUrl())
                 .createdDate(posts.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))

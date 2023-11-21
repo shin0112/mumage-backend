@@ -25,9 +25,18 @@ public class PostDto {
     private String userPicture;
     private Set<Long> likeUserIdList;
 
+    private String songName;
+    private String singer;
+    private String trackUrl;
+    private String albumName;
+
     @Builder
-    public PostDto(Long postId, String singer, String songName, String content, String imageUrl, String createdDate, Long userId, String userName, String userPicture, Set<Long> likeUserIdList) {
+    public PostDto(Long postId, String singer, String songName, String trackUrl, String albumName, String content, String imageUrl, String createdDate, Long userId, String userName, String userPicture, Set<Long> likeUserIdList) {
         this.postId = postId;
+        this.singer = singer;
+        this.songName = songName;
+        this.trackUrl = trackUrl;
+        this.albumName=albumName;
         this.content = content;
         this.imageUrl = imageUrl;
         this.createdDate = createdDate;
@@ -37,3 +46,4 @@ public class PostDto {
         this.likeUserIdList = likeUserIdList;
     }
 }
+

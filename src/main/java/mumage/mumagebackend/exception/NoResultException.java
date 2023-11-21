@@ -1,4 +1,4 @@
-package com.cho.songstagram.exception;
+package mumage.mumagebackend.exception;
 
 public class NoResultException extends Exception {
 
