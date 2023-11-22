@@ -10,18 +10,19 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
+@Repository
 public interface FollowsRepository extends JpaRepository<Follow, Long> {
     Follow findByFromAndTo(User from, User to); // 팔로워와 팔로잉 유저로 팔로우 정보 찾기
 
-    @Query("SELECT f.from From Follow f WHERE f.to.id=:id")
+    @Query("SELECT f.from From Follow f WHERE f.to.userId=:id")
     Set<User> getFollower(@Param("id") Long userId); // id에 해당하는 User의 팔로워 목록 찾기
 
-    @Query("SELECT f.to From Follow f WHERE f.from.id=:id")
+    @Query("SELECT f.to From Follow f WHERE f.from.userId=:id")
     Set<User> getFollowing(@Param("id") Long userId); // id에 해당하는 User의 팔로잉 목록 찾기
 
-    @Query("SELECT COUNT(f) FROM Follow f WHERE f.to.id=:id")
+    @Query("SELECT COUNT(f) FROM Follow f WHERE f.to.userId=:id")
     Long countFollower(@Param("id") Long userId); // user의 팔로워 수 반환
 
-    @Query("SELECT count(f) FROM Follow f WHERE f.from.id=:id")
+    @Query("SELECT count(f) FROM Follow f WHERE f.from.userId=:id")
     Long countFollowing(@Param("id") Long userId); // user의 팔로잉 수 반환
 }
