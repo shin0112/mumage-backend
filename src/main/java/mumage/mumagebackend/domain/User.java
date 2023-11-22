@@ -7,12 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import org.hibernate.validator.constraints.UniqueElements;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -51,9 +46,16 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "to", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Follow> follower; // 팔로워 목록
-    
+
+    @ManyToMany
+    @JoinTable(name = "user_genre",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private Set<Genre> genres; // 선택한 장르
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(this.getRole()));
         return authorities;
@@ -190,5 +192,12 @@ public class User implements UserDetails {
         this.follower = follower;
     }
 
+    public Set<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(Set<Genre> genres) {
+        this.genres = genres;
+    }
 }
 
