@@ -3,13 +3,13 @@ package mumage.mumagebackend.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mumage.mumagebackend.Config.RedisUtil;
+import mumage.mumagebackend.domain.Genre;
 import mumage.mumagebackend.domain.Role;
 import mumage.mumagebackend.domain.User;
-import mumage.mumagebackend.dto.LoginRequestDto;
-import mumage.mumagebackend.dto.LoginResponseDto;
-import mumage.mumagebackend.dto.UserJoinDto;
+import mumage.mumagebackend.dto.*;
 import mumage.mumagebackend.exception.CustomException;
 import mumage.mumagebackend.exception.ErrCode;
+import mumage.mumagebackend.repository.GenreRepository;
 import mumage.mumagebackend.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -19,15 +19,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import mumage.mumagebackend.dto.UserRequestDto;
-import mumage.mumagebackend.dto.UserResponseDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +35,7 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final GenreRepository genreRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtservice;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -113,18 +113,28 @@ public class UserService implements UserDetailsService {
         if(userRequestDto.getPassword() != null)
             user.setPassword(userRequestDto.getPassword());
         if(userRequestDto.getName() != null)
-        user.setName(userRequestDto.getName());
+            user.setName(userRequestDto.getName());
         if(userRequestDto.getNickname() != null)
-        user.setNickname(userRequestDto.getNickname());
+            user.setNickname(userRequestDto.getNickname());
+
+        Set<String> genres = userRequestDto.getGenres();
+        Set<Genre> userGenres = new HashSet<Genre>();
+
+        for (String genre : genres) {
+            Optional<Genre> byGenreName = genreRepository.findByGenreName(genre);
+            if (byGenreName.isEmpty())
+                throw new CustomException(ErrCode.NOT_EXIST_GENRE, HttpStatus.NOT_FOUND);
+            userGenres.add(byGenreName.get());
+        }
+
+
+        user.setGenres(userGenres);
 
         UserResponseDto response = UserResponseDto.builder()
                 .userId(user.getUserId())
                 .loginId(user.getLoginId())
                 .password(user.getPassword())
-                .name(user.getName())
-                .nickname(user.getNickname())
-                .email(user.getEmail())
-                .profileUrl(user.getProfileUrl())
+                .name(user.getName()).nickname(user.getNickname()).email(user.getEmail()).profileUrl(user.getProfileUrl()).genres(user.getGenres())
                 .build();
 
         return response;
@@ -158,6 +168,15 @@ public class UserService implements UserDetailsService {
      */
     public Optional<User> findById(Long memberId) {
         return userRepository.findById(memberId);
+    }
+
+    public Optional<User> findByLoginId(String loginId) {
+        return userRepository.findByLoginId(loginId);
+    }
+
+    public Set<Genre> findByGenres(Long memberId) {
+        Optional<User> user = findById(memberId);
+        return user.get().getGenres();
     }
 
     @Override
