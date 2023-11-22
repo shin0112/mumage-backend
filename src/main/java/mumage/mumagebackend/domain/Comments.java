@@ -9,10 +9,10 @@ import jakarta.persistence.*; //javax->jarkarta
 @Entity
 @Getter
 @NoArgsConstructor
-public class Comments extends BaseTimeEntity{
+public class Comments extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comments_id")
     private Long id;
 
@@ -27,8 +27,9 @@ public class Comments extends BaseTimeEntity{
     private User user; // 댓글 작성자
 
     @Builder
-    public Comments(String content, Posts posts, User user){
+    public Comments(String content, Posts posts, User user) {
         this.content = content;
         this.posts = posts;
         this.user = user;
     }
+}

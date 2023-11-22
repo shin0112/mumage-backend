@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name="Posts")
 public class Posts extends BaseTimeEntity{
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "posts_id")
     private Long postId;
 
