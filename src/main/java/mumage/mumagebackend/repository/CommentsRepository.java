@@ -18,6 +18,6 @@ public interface CommentsRepository extends JpaRepository<Comments, Long> {
     List<Comments> findCommentsByPosts(Posts posts); // 특정 게시글에 해당하는 댓글 가져오기
 
     // fetch join ->  댓글을 작성한 user 정보까지
-    @Query("select c from Comments c join fetch c.User where c.posts = ?1")
+    @Query("select c from Comments c join fetch c.user where c.posts = ?1")
     Set<Comments> findCommentsAndUserByPosts(Posts posts);
 }

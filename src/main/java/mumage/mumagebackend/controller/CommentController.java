@@ -4,13 +4,10 @@ import lombok.RequiredArgsConstructor;
 import mumage.mumagebackend.dto.CommentDto;
 import mumage.mumagebackend.service.CommentsService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class CommentController {
 
     private final CommentsService commentsService;
