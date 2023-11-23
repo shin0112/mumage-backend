@@ -3,6 +3,7 @@ package mumage.mumagebackend.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mumage.mumagebackend.Config.RedisUtil;
+import mumage.mumagebackend.domain.Follow;
 import mumage.mumagebackend.domain.Genre;
 import mumage.mumagebackend.domain.Role;
 import mumage.mumagebackend.domain.User;
@@ -166,8 +167,8 @@ public class UserService implements UserDetailsService {
     /*
     특정 회원 조회
      */
-    public Optional<User> findById(Long memberId) {
-        return userRepository.findById(memberId);
+    public Optional<User> findById(Long userId) {
+        return userRepository.findByUserId(userId);
     }
 
     public Optional<User> findByLoginId(String loginId) {
@@ -177,6 +178,11 @@ public class UserService implements UserDetailsService {
     public Set<Genre> findByGenres(Long memberId) {
         Optional<User> user = findById(memberId);
         return user.get().getGenres();
+    }
+
+    public Set<Follow> findByFollowings(Long userId) {
+        Optional<User> user = findById(userId);
+        return user.get().getFollowing();
     }
 
     @Override

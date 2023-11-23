@@ -1,5 +1,6 @@
 package mumage.mumagebackend.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,10 +19,12 @@ public class Likes {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "posts_id")
+    @JsonBackReference
     private Posts posts; // 좋아요 누른 게시글
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "User_id")
+    @JsonBackReference
     private User user; // 좋아요 누른 사용자
 
     @Builder

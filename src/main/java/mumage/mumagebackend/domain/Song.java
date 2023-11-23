@@ -1,5 +1,6 @@
 package mumage.mumagebackend.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class Song {
     private String albumName; //앨범 이름
 
     @OneToMany(mappedBy = "song")
+    @JsonManagedReference
     private List<Posts> posts = new ArrayList<>();
 
     @ManyToMany

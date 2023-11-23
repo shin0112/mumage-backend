@@ -1,43 +1,43 @@
 package mumage.mumagebackend.controller;
 
-import mumage.mumagebackend.domain.Comments;
-import mumage.mumagebackend.domain.Posts;
-import mumage.mumagebackend.domain.User;
-import mumage.mumagebackend.dto.CommentDto;
-import mumage.mumagebackend.dto.PageDto;
-import mumage.mumagebackend.dto.PostDto;
+import mumage.mumagebackend.domain.*;
+import mumage.mumagebackend.dto.*;
 import mumage.mumagebackend.exception.NoResultException;
 import mumage.mumagebackend.service.CommentsService;
+import mumage.mumagebackend.service.JwtService;
 import mumage.mumagebackend.service.PostsService;
 import mumage.mumagebackend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.nio.charset.Charset;
+import java.util.*;
 
 
 //게시글
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class PostsController {
 
     private final UserService userService;
     private final PostsService postsService;
     private final CommentsService commentsService;
+    private final JwtService jwtService;
 
     //글 전체 조회
 
@@ -50,22 +50,34 @@ public class PostsController {
 
     //게시글 작성 처리 컨트롤러
     @PostMapping("/post/write")
-    public String writePost(@Valid @ModelAttribute("postDto") PostDto postDto, BindingResult result,
-                            @RequestParam("files") MultipartFile files,
-                            HttpServletRequest request,
-                            HttpSession session, Model model) throws IOException {
+    public PostsResponseDto writePost(@Valid @ModelAttribute("postDto") PostDto postDto, BindingResult result,
+                                      @RequestParam(value = "files", required = false) MultipartFile files,
+                                      @RequestHeader HttpHeaders headers,
+                                      HttpServletRequest request,
+                                      Model model) throws IOException {
 
-        if (result.hasErrors()) { // 내용에 오류가 있을 시 다시 작성
-            return "post";
-        }
+//        if (result.hasErrors()) { // 내용에 오류가 있을 시 다시 작성
+//            return "post";
+//        }
 
-        User loginUser = (User) session.getAttribute("loginUser"); // loginUser 세션에서 가져오기
+        String token = headers.getFirst("Authorization");
+        Optional<User> loginUser = userService.findByLoginId(jwtService.extractLoginId(token));
+
+        // User loginUser = (User) session.getAttribute("loginUser"); // loginUser 세션에서 가져오기
 
         String picture = addFile(files);
-        Posts posts = postsService.makePost(postDto, loginUser.getUserId(), picture); // Posts 객체 생성
+        Posts posts = postsService.makePost(postDto, loginUser.get().getUserId(), picture); // Posts 객체 생성
         postsService.save(posts); // db에 저장
 
-        return "redirect:/";
+        return PostsResponseDto.builder()
+                .postId(posts.getPostId())
+                .content(posts.getContent())
+                .imageUrl(posts.getImageUrl())
+                .userId(posts.getUser().getUserId())
+                .songName(posts.getSong().getSongName())
+                .genres(posts.getSong().getGenres())
+                .build();
+
     }
 
     // fetch join 사용
@@ -156,21 +168,138 @@ public class PostsController {
         return "post/delete";
     }
 
-//    //추천 탭 (격자 형태), 사용자가 UI 선택 => 장르에 따른 게시물 표시 (장르별&페이징)
-//    /* /{category_name}/page={pageNo}&orderby={orderCriteria} */
-//    @GetMapping("/post/recommend/{genre_name}")
-//    public String RecommendListGet(@PathVariable String genre_name,
-//                                   @PathVariable("userId") Long userId,
-//                                   @RequestParam(value="orderby",defaultValue = "id") String orderCriteria, //정렬 기준.  뷰에서 정렬 순서 파라미터를 보내주지 않아도 기본적으로 id(최신순) 으로 정렬
-//                                   @RequestParam(value="page", defaultValue="0") int pageNo, //페이지 번호
-//                                   Pageable pageable,
-//                                   Model model){
-//        //페이징 처리
-//        Page<PostDto.ResponsePageDto> postPageList =
-//                postsService.getPageList(pageable, pageNo, genre_name, orderCriteria); // 페이지 객체 생성
+    //추천 탭 (격자 형태), 사용자가 UI 선택 => 장르에 따른 게시물 표시 (장르별&페이징)
+    /* /{category_name}/page={pageNo}&orderby={orderCriteria} */
+    @GetMapping("/post/recommend/genre/{userId}")
+    public ResponseEntity<MessageDto> recommendUserGenres(@PathVariable Long userId
+                                                          //@RequestParam(value = "page", defaultValue = "0") int pageNo, //페이지 번호
+                                                          //Pageable pageable, Model model
+    ) {
 
-//    }
+        Set<Genre> userGenres = userService.findByGenres(userId);
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Posts> posts = postsService.readPostsByGenresSortingLikes(userGenres, pageRequest);
+        // Page<PostsResponseDto> postsResponseDtos = postsService.readPostsByGenresSortingLikes(userGenres, pageRequest);
 
+//        Page<PostsResponseDto> map = postsResponseDtos.map(e ->
+//                PostsResponseDto.builder()
+//                        .postId(e.getPostId())
+//                        .content(e.getContent())
+//                        .imageUrl(e.getImageUrl())
+//                        .userId(e.getUser().getUserId())
+//                        .songName(e.getSong().getSongName())
+//                        .genres(e.getSong().getGenres())
+//                        .build());
+
+        MessageDto messageDto = new MessageDto();
+        messageDto.setData(posts);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        messageDto.setStatus(HttpStatus.OK.value());
+        messageDto.setMessage("유저의 선호 장르별 게시글 추천 성공(정렬: 좋아요 개수)");
+        return new ResponseEntity<>(messageDto, headers, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/posts/recommend/follow/{userId}")
+    public ResponseEntity<MessageDto> recommendUserFollow(@PathVariable Long userId
+                                                          //@RequestParam(value = "page", defaultValue = "0") int pageNo, //페이지 번호
+                                                          //Pageable pageable, Model model
+    ) {
+
+        Set<Follow> userFollowings = userService.findByFollowings(userId);
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Posts> posts = postsService.readPostsByFollowsSortingLikes(userFollowings, pageRequest);
+
+        MessageDto messageDto = new MessageDto();
+        messageDto.setData(posts);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        messageDto.setStatus(HttpStatus.OK.value());
+        messageDto.setMessage("유저의 팔로우로 게시글 추천 성공(정렬: 좋아요 개수)");
+        return new ResponseEntity<>(messageDto, headers, HttpStatus.OK);
+
+    }
+
+    // 장르로 검색
+    @GetMapping("/post/genre/{genreName}")
+    public ResponseEntity<MessageDto> searchPostsByGenre(@PathVariable String genreName,
+                                                          @RequestParam(value = "page", defaultValue = "0") int pageNo, //페이지 번호
+                                                          Pageable pageable, Model model) {
+
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Posts> posts = postsService.searchPostsByGenre(genreName, pageRequest);
+
+        MessageDto messageDto = new MessageDto();
+        messageDto.setData(posts);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        messageDto.setStatus(HttpStatus.OK.value());
+        messageDto.setMessage("장르별 게시글 검색 성공(정렬: 좋아요 개수)");
+        return new ResponseEntity<>(messageDto, headers, HttpStatus.OK);
+
+    }
+
+    // 가수로 검색
+    @GetMapping("/post/singer/{singer}")
+    public ResponseEntity<MessageDto> searchPostsBySinger(@PathVariable String singer) {
+
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Posts> posts = postsService.searchPostsBySinger(singer, pageRequest);
+
+        MessageDto messageDto = new MessageDto();
+        messageDto.setData(posts);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        messageDto.setStatus(HttpStatus.OK.value());
+        messageDto.setMessage("가수로 게시글 검색 성공(정렬: 좋아요 개수)");
+        return new ResponseEntity<>(messageDto, headers, HttpStatus.OK);
+
+    }
+
+    // 노래 제목으로 검색
+    @GetMapping("/post/song/{songName}")
+    public ResponseEntity<MessageDto> searchPostsBySongName(@PathVariable String songName) {
+
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Posts> posts = postsService.searchPostsBySongName(songName, pageRequest);
+
+        MessageDto messageDto = new MessageDto();
+        messageDto.setData(posts);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        messageDto.setStatus(HttpStatus.OK.value());
+        messageDto.setMessage("노래 제목으로 게시글 검색 성공(정렬: 좋아요 개수)");
+        return new ResponseEntity<>(messageDto, headers, HttpStatus.OK);
+
+    }
+
+    // 회원 닉네임으로 검색
+    @GetMapping("/post/user/{nickname}")
+    public ResponseEntity<MessageDto> searchPostsByUserNickname(@PathVariable String nickname) {
+
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Posts> posts = postsService.searchPostsByUserNickname(nickname, pageRequest);
+
+        MessageDto messageDto = new MessageDto();
+        messageDto.setData(posts);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        messageDto.setStatus(HttpStatus.OK.value());
+        messageDto.setMessage("회원 별명으로 게시글 검색 성공(정렬: 좋아요 개수)");
+        return new ResponseEntity<>(messageDto, headers, HttpStatus.OK);
+
+    }
 
     // 권한 없이 접근 했을시
     @GetMapping("/post/noAuthority")
@@ -186,7 +315,7 @@ public class PostsController {
         //UUID가 적용된 이름 지정 -> return
         String newName = uuid + "_" + files.getOriginalFilename();
         //파일 저장할 기본 디렉토리
-        String baseDir = "C:\\git\\Mumage-backend\\uploads\\post\\";
+        String baseDir = "C:\\sje\\project\\mumage-backend\\uploads.posts\\";
         //지정된 경로에 파일을 저장
         files.transferTo(new File(baseDir + newName));
         return newName;
@@ -196,7 +325,7 @@ public class PostsController {
 
     //파일 삭제
     public void removeFile(String path) {
-        String originalPath = "C:\\git\\Mumage-backend\\uploads\\post\\" + path;
+        String originalPath = "C:\\sje\\project\\mumage-backend\\uploads.posts" + path;
         File file = new File(originalPath);
         if (file.delete()) {
             System.out.println("delete Success");

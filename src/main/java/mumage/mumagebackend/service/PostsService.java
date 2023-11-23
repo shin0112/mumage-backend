@@ -1,31 +1,31 @@
 package mumage.mumagebackend.service;
 
-import mumage.mumagebackend.domain.Posts;
-import mumage.mumagebackend.domain.User;
-import mumage.mumagebackend.dto.PostDto;
-import mumage.mumagebackend.repository.PostsRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import mumage.mumagebackend.domain.*;
+import mumage.mumagebackend.dto.PostDto;
+import mumage.mumagebackend.dto.PostsResponseDto;
+import mumage.mumagebackend.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostsService {
 
+    private final UserRepository userRepository;
     private final PostsRepository postsRepository;
+    private final SongRepository songRepository;
+    private final GenreRepository genreRepository;
+    private final FollowsRepository followsRepository;
     private final LikesService likesService;
     private final FollowService followService;
     private final UserService UserService;
@@ -126,6 +126,7 @@ public class PostsService {
                 .content(postDto.getContent())
                 .imageUrl(picture)
                 .user(user)
+                .song(songRepository.findBySongNameAndSinger(postDto.getSongName(), postDto.getSinger()).get())
                 .build();
     }
 
@@ -148,4 +149,54 @@ public class PostsService {
                 .build();
     }
 
+    public Page<Posts> readPostsByGenresSortingLikes(Set<Genre> genres, Pageable pageable) {
+
+        Set<Song> songs = new HashSet<>();
+        for (Genre genre : genres) {
+            Set<Song> byGenreIn = songRepository.findByGenreIn(genre);
+            for (Song song : byGenreIn) {
+                songs.add(song);
+            }
+        }
+
+        return postsRepository.findBySongIn(songs, pageable);
+
+    }
+
+    public Page<Posts> readPostsByFollowsSortingLikes(Set<Follow> follows, Pageable pageable) {
+
+        Set<User> users = new HashSet<>();
+        for (Follow follow : follows) {
+            users.add(follow.getTo());
+        }
+
+        return postsRepository.findByUsers(users, pageable);
+    }
+
+    public Page<Posts> searchPostsByGenre(String genreName, Pageable pageable) {
+
+        Set<Song> byGenreIn = songRepository.findByGenreIn(genreRepository.findByGenreName(genreName).get());
+        return postsRepository.findBySongIn(byGenreIn, pageable);
+
+    }
+
+    public Page<Posts> searchPostsBySinger(String singer, Pageable pageable) {
+
+        Set<Song> bySinger = songRepository.findBySinger(singer);
+        return postsRepository.findBySongIn(bySinger, pageable);
+
+    }
+
+    public Page<Posts> searchPostsBySongName(String songName, Pageable pageable) {
+
+        Set<Song> bySongName = songRepository.findBySongName(songName);
+        return postsRepository.findBySongIn(bySongName, pageable);
+
+    }
+
+    public Page<Posts> searchPostsByUserNickname(String nickname, Pageable pageable) {
+
+        return postsRepository.findByUser(userRepository.findByNickname(nickname).get(), pageable);
+
+    }
 }

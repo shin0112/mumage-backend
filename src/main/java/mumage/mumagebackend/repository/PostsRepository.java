@@ -40,5 +40,17 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
     @Query(value = "SELECT count(p) FROM Posts p WHERE p.user = ?1 and p.createdDate >= ?2 and p.createdDate <= ?3")
     Long getPostsCntByUserToday(User user, LocalDateTime todayDate, LocalDateTime tomorrowDate); // user가 오늘 작성한 글의 수 반환
 
+    @Query(value = "SELECT p, count(l) as like_count FROM Posts p LEFT JOIN p.likesList l WHERE p.song IN ?1 GROUP BY p ORDER BY like_count desc ")
+    Page<Posts> findBySongIn(Set<Song> songs, Pageable pageable); // songs 안에 있는 song 찾아서 반환, likesList로 정렬
+
+    @Query(value = "SELECT p, count(l) as like_count FROM Posts p LEFT JOIN p.likesList l WHERE p.song = ?1 GROUP BY p ORDER BY like_count desc ")
+    Page<Posts> findBySong(Song song, Pageable pageable); // songs 안에 있는 song 찾아서 반환, likesList로 정렬
+
+    @Query(value = "SELECT p, count(l) as like_count FROM Posts p LEFT JOIN p.likesList l WHERE p.user = ?1 GROUP BY p ORDER BY like_count desc ")
+    Page<Posts> findByUser(User user, Pageable pageable); // user로 검색
+
+    @Query(value = "SELECT p, count(l) as like_count FROM Posts p LEFT JOIN p.likesList l WHERE p.user in ?1 GROUP BY p ORDER BY like_count desc ")
+    Page<Posts> findByUsers(Set<User> users, Pageable pageable); // users 내부의 user로 검색
+
 }
 

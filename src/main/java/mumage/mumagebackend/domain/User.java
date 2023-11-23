@@ -1,5 +1,7 @@
 package mumage.mumagebackend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -33,18 +35,23 @@ public class User implements UserDetails {
     private String role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<Comments> commentsList; // 회원이 단 댓글 목록
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<Likes> likesList; // 회원이 누른 좋아요 목록
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonManagedReference
     private Set<Posts> postsList; // 회원이 작성한 글 목록
 
     @OneToMany(mappedBy = "from", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<Follow> following; // 팔로잉 목록
 
     @OneToMany(mappedBy = "to", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<Follow> follower; // 팔로워 목록
 
     @ManyToMany
