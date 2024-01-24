@@ -11,7 +11,7 @@
 https://github.com/Musicstagram/mumage-frontend
 
 ### ERD
-![{486794AD-946C-4314-9E08-0961A0BE7167}.png](..%2F..%2F..%2FUsers%2FUSER%2FAppData%2FLocal%2FPackages%2FMicrosoftWindows.Client.CBS_cw5n1h2txyewy%2FTempState%2FScreenClip%2F%7B486794AD-946C-4314-9E08-0961A0BE7167%7D.png)
+![mumage-backend-erd](https://github.com/Musicstagram/mumage-backend/assets/83761128/82c49e20-b00b-4c41-ab93-aaf58650c128)
 
 ---
 ### 주요 기능
@@ -23,7 +23,7 @@ https://github.com/Musicstagram/mumage-frontend
 
 ✅ 이미지 생성 및 업로드
 - Spotify API : 곡 검색, 리스트 업, 미리듣기 제공
-- OpenAI API : 곡 가사를 바탕으로 이미지 생성 위한 프롬프트 생성
+- OpenAI API : 곡 가사를 바탕으로 이미지 생성 위한 프롬프트 생성  
 - Karlo API : 프롬프트를 기반으로 이미지 생성
 
 <img width="600" alt="스크린샷 2023-11-23 오후 9 56 22" src="https://github.com/Musicstagram/mumage-frontend/assets/49388937/b1071abf-da6f-4d7a-a4b5-c7a36af156a4">
