@@ -1,4 +1,4 @@
-package mumage.mumagebackend.exception;
+package mumage.mumagebackend.config.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import mumage.mumagebackend.dto.ExceptionResponseDto;

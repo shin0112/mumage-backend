@@ -1,7 +1,6 @@
 package mumage.mumagebackend.controller;
 
-import mumage.mumagebackend.exception.NoResultException;
-import org.springframework.stereotype.Controller;
+import mumage.mumagebackend.config.exception.NoResultException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

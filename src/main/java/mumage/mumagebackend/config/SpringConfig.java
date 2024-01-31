@@ -1,4 +1,4 @@
-package mumage.mumagebackend.Config;
+package mumage.mumagebackend.config;
 
 import jakarta.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;

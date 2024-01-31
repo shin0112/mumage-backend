@@ -1,4 +1,4 @@
-package mumage.mumagebackend.exception;
+package mumage.mumagebackend.config.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

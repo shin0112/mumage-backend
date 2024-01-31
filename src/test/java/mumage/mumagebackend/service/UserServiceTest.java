@@ -1,18 +1,11 @@
 package mumage.mumagebackend.service;
 
 import mumage.mumagebackend.domain.User;
-import mumage.mumagebackend.dto.MessageDto;
 import mumage.mumagebackend.dto.UserJoinDto;
-import mumage.mumagebackend.exception.CustomException;
-import mumage.mumagebackend.exception.RestControllerAdvisor;
 import mumage.mumagebackend.repository.UserRepository;
-import org.apache.coyote.Response;
-import org.aspectj.bridge.Message;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;

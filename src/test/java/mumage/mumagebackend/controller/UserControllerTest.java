@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mumage.mumagebackend.domain.User;
 import mumage.mumagebackend.dto.MessageDto;
 import mumage.mumagebackend.dto.UserJoinDto;
-import mumage.mumagebackend.exception.CustomException;
+import mumage.mumagebackend.config.exception.CustomException;
 import mumage.mumagebackend.repository.UserRepository;
 import mumage.mumagebackend.service.UserService;
 import org.junit.jupiter.api.AfterEach;

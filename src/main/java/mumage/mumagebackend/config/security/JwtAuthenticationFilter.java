@@ -1,4 +1,4 @@
-package mumage.mumagebackend.Config;
+package mumage.mumagebackend.config.security;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
