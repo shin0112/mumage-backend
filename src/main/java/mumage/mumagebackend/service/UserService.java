@@ -2,14 +2,17 @@ package mumage.mumagebackend.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mumage.mumagebackend.config.exception.CustomException;
+import mumage.mumagebackend.config.exception.ErrCode;
 import mumage.mumagebackend.config.redis.RedisUtil;
 import mumage.mumagebackend.domain.Follow;
 import mumage.mumagebackend.domain.Genre;
 import mumage.mumagebackend.domain.Role;
 import mumage.mumagebackend.domain.User;
-import mumage.mumagebackend.dto.*;
-import mumage.mumagebackend.config.exception.CustomException;
-import mumage.mumagebackend.config.exception.ErrCode;
+import mumage.mumagebackend.dto.UserJoinDto;
+import mumage.mumagebackend.dto.UserLoginDto;
+import mumage.mumagebackend.dto.UserRequestDto;
+import mumage.mumagebackend.dto.UserResponseDto;
 import mumage.mumagebackend.repository.GenreRepository;
 import mumage.mumagebackend.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -191,24 +194,22 @@ public class UserService implements UserDetailsService {
         return userRepository.findByLoginId(username).orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없음"));
     }
 
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+    public UserLoginDto.Response login(UserLoginDto.Request request) {
 
         // loginId 동일 시, 유저 정보 반환
-        User user = userRepository.findByLoginId(loginRequestDto.getLoginId())
+        User user = userRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new CustomException(ErrCode.NOT_FOUND_MEMBER, HttpStatus.NOT_FOUND));
 
         // 패스워드 불일치 시, 에러 발생
-        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new CustomException(ErrCode.INVALID_PASSWORD, HttpStatus.BAD_REQUEST);
         } else {
-            LoginResponseDto loginResponseDto = new LoginResponseDto();
-            loginResponseDto.setLoginId(user.getLoginId());
-            loginResponseDto.setJWT(jwtservice.generateToken(user.getLoginId(), user.getRole()));
+            UserLoginDto.Response response = new UserLoginDto.Response(user.getLoginId(), jwtservice.generateToken(user.getLoginId(), user.getRole()));
 
-            redisTemplate.opsForValue().set("RT:" +user.getLoginId(), loginResponseDto.getJWT());
+            redisTemplate.opsForValue().set("RT:" + user.getLoginId(), response.getJWT());
             log.info("로그인");
 
-            return loginResponseDto;
+            return response;
         }
 
     }
