@@ -1,4 +1,4 @@
-package mumage.mumagebackend.exception;
+package mumage.mumagebackend.config.exception;
 
 public class NoResultException extends Exception {
 

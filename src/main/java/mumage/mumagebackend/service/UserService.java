@@ -2,14 +2,14 @@ package mumage.mumagebackend.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mumage.mumagebackend.config.RedisUtil;
+import mumage.mumagebackend.config.redis.RedisUtil;
 import mumage.mumagebackend.domain.Follow;
 import mumage.mumagebackend.domain.Genre;
 import mumage.mumagebackend.domain.Role;
 import mumage.mumagebackend.domain.User;
 import mumage.mumagebackend.dto.*;
-import mumage.mumagebackend.exception.CustomException;
-import mumage.mumagebackend.exception.ErrCode;
+import mumage.mumagebackend.config.exception.CustomException;
+import mumage.mumagebackend.config.exception.ErrCode;
 import mumage.mumagebackend.repository.GenreRepository;
 import mumage.mumagebackend.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;

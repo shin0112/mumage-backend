@@ -1,4 +1,4 @@
-package mumage.mumagebackend.config;
+package mumage.mumagebackend.config.security;
 
 import lombok.RequiredArgsConstructor;
 import mumage.mumagebackend.service.UserService;

@@ -2,7 +2,7 @@ package mumage.mumagebackend.controller;
 
 import mumage.mumagebackend.domain.*;
 import mumage.mumagebackend.dto.*;
-import mumage.mumagebackend.exception.NoResultException;
+import mumage.mumagebackend.config.exception.NoResultException;
 import mumage.mumagebackend.service.CommentsService;
 import mumage.mumagebackend.service.JwtService;
 import mumage.mumagebackend.service.PostsService;

@@ -1,4 +1,4 @@
-package mumage.mumagebackend.config;
+package mumage.mumagebackend.config.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;

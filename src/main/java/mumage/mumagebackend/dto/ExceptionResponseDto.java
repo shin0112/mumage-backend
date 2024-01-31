@@ -1,7 +1,7 @@
 package mumage.mumagebackend.dto;
 
 import lombok.Getter;
-import mumage.mumagebackend.exception.ErrCode;
+import mumage.mumagebackend.config.exception.ErrCode;
 
 @Getter
 public class ExceptionResponseDto {
