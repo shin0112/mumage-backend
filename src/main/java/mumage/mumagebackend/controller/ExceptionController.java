@@ -15,7 +15,7 @@ public class ExceptionController {
 
         model.addAttribute("errorMessage",e.getMessage());
 
-        return "error/noResult";
+        return e.getMessage();
     }
 
 }
