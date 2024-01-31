@@ -4,12 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mumage.mumagebackend.domain.User;
-import mumage.mumagebackend.dto.LoginRequestDto;
-import mumage.mumagebackend.dto.LoginResponseDto;
-import mumage.mumagebackend.dto.MessageDto;
-import mumage.mumagebackend.dto.UserJoinDto;
-import mumage.mumagebackend.dto.UserRequestDto;
-import mumage.mumagebackend.dto.UserResponseDto;
+import mumage.mumagebackend.dto.*;
 import mumage.mumagebackend.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,16 +38,16 @@ public class UserController {
     }
 
     @PostMapping(value = "/user/login")
-    public ResponseEntity<MessageDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<MessageDto> login(@RequestBody UserLoginDto.Request request) {
 
-        LoginResponseDto responseDto = userService.login(loginRequestDto);
+        UserLoginDto.Response response = userService.login(request);
         MessageDto messageDto = new MessageDto();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
         messageDto.setStatus(HttpStatus.OK.value());
         messageDto.setMessage("로그인 성공");
-        messageDto.setData(responseDto);
+        messageDto.setData(response);
         return new ResponseEntity<>(messageDto, headers, HttpStatus.OK);
 
     }
