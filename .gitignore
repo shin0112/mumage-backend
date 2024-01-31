@@ -38,3 +38,4 @@ out/
 ### Config ###
 application.yml
 application.yaml
+frontend/*

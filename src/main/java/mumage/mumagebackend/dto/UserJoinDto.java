@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import mumage.mumagebackend.domain.Role;
 
 @Getter
 @Setter
@@ -19,6 +20,6 @@ public class UserJoinDto {
     @NotBlank @Size(min = 1, max = 15) @Pattern(regexp = "^[0-9a-zA-Z가-힣]*$")
     private String nickname;
     @NotBlank
-    private String role;
+    private String role = Role.ROLE_USER.getRole();
 
 }
