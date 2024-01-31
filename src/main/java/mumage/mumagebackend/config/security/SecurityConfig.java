@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mumage.mumagebackend.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,6 +32,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(req -> req
+                        .requestMatchers(HttpMethod.GET).permitAll()
                         .requestMatchers("/error","/swagger-ui/**").permitAll()
                         .requestMatchers("/signup", "/signup/**", "/user/login").permitAll()
                         .anyRequest().authenticated())
