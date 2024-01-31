@@ -1,4 +1,4 @@
-package mumage.mumagebackend.Config;
+package mumage.mumagebackend.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -7,30 +7,28 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
 @Slf4j
-public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         ObjectMapper objectMapper = new ObjectMapper();
         response.setContentType("application/json;charset=UTF-8");
-        JSONObject responJson = new JSONObject();
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        JSONObject responseJson = new JSONObject();
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         try {
-            responJson.put("message", "엑세스 권한이 없습니다.");
+            responseJson.put("message", "인증에 실패했습니다");
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        response.getWriter().write(objectMapper.writeValueAsString(responJson));
-
+        response.getWriter().write(objectMapper.writeValueAsString(responseJson));
     }
 
 }

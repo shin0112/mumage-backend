@@ -1,4 +1,4 @@
-package mumage.mumagebackend.Config;
+package mumage.mumagebackend.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -7,28 +7,30 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
 @Slf4j
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+
         ObjectMapper objectMapper = new ObjectMapper();
         response.setContentType("application/json;charset=UTF-8");
-        JSONObject responseJson = new JSONObject();
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        JSONObject responJson = new JSONObject();
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         try {
-            responseJson.put("message", "인증에 실패했습니다");
+            responJson.put("message", "엑세스 권한이 없습니다.");
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        response.getWriter().write(objectMapper.writeValueAsString(responseJson));
+        response.getWriter().write(objectMapper.writeValueAsString(responJson));
+
     }
 
 }

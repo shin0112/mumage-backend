@@ -1,4 +1,4 @@
-package mumage.mumagebackend.Config;
+package mumage.mumagebackend.config;
 
 import jakarta.servlet.*;
 import lombok.extern.slf4j.Slf4j;

@@ -2,7 +2,7 @@ package mumage.mumagebackend.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mumage.mumagebackend.Config.RedisUtil;
+import mumage.mumagebackend.config.RedisUtil;
 import mumage.mumagebackend.domain.Follow;
 import mumage.mumagebackend.domain.Genre;
 import mumage.mumagebackend.domain.Role;
