@@ -27,7 +27,6 @@ public class Follow {
     @JsonBackReference
     private User to; // 누구를 팔로우 하는가
 
-    @Builder
     Follow(User from, User to){
         this.from = from;
         this.to = to;
