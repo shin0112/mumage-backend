@@ -27,8 +27,7 @@ public class Likes {
     @JsonBackReference
     private User user; // 좋아요 누른 사용자
 
-    @Builder
-    public Likes(Posts posts, User user){
+    public Likes(Posts posts, User user) {
         this.posts = posts;
         this.user = user;
     }
