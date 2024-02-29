@@ -1,6 +1,5 @@
 package mumage.mumagebackend.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,23 +35,23 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Comments> commentsList; // 회원이 단 댓글 목록
+    private final Set<Comments> comments = new HashSet<>(); // 회원이 단 댓글 목록
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Likes> likesList; // 회원이 누른 좋아요 목록
+    private final Set<Likes> likes = new HashSet<>(); // 회원이 누른 좋아요 목록
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
-    private Set<Posts> postsList; // 회원이 작성한 글 목록
+    private final Set<Posts> posts = new HashSet<>(); // 회원이 작성한 글 목록
 
     @OneToMany(mappedBy = "from", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Follow> following; // 팔로잉 목록
+    private final Set<Follow> following = new HashSet<>(); // 팔로잉 목록
 
     @OneToMany(mappedBy = "to", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Follow> follower; // 팔로워 목록
+    private final Set<Follow> follower = new HashSet<>(); // 팔로워 목록
 
     @ManyToMany
     @JoinTable(name = "user_genre",
@@ -159,52 +158,33 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-        public Set<Comments> getCommentsList() {
-        return commentsList;
+    public Set<Comments> getComments() {
+        return comments;
     }
 
-    public Set<Likes> getLikesList() {
-        return likesList;
+    public Set<Likes> getLikes() {
+        return likes;
     }
 
-    public void setCommentsList(Set<Comments> commentsList) {
-        this.commentsList = commentsList;
+
+    public Set<Posts> getPosts() {
+        return posts;
     }
 
-    public void setLikesList(Set<Likes> likesList) {
-        this.likesList = likesList;
-    }
-
-    public Set<Posts> getPostsList() {
-        return postsList;
-    }
-
-    public void setPostsList(Set<Posts> postsList) {
-        this.postsList = postsList;
-    }
 
     public Set<Follow> getFollowing() {
         return following;
     }
 
-    public void setFollowing(Set<Follow> following) {
-        this.following = following;
-    }
 
     public Set<Follow> getFollower() {
         return follower;
     }
 
-    public void setFollower(Set<Follow> follower) {
-        this.follower = follower;
-    }
 
     public Set<Genre> getGenres() {
         return genres;
     }
 
-    public void setGenres(Set<Genre> genres) {
-        this.genres = genres;
-    }
 }
 

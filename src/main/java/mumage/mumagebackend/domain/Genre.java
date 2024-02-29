@@ -1,6 +1,7 @@
 package mumage.mumagebackend.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
@@ -17,26 +18,9 @@ public class Genre {
     private String genreName;
 
     @ManyToMany(mappedBy = "genres")
-    private Set<Song> songs;
+    private final Set<Song> songs = new HashSet<>();
 
     @ManyToMany(mappedBy = "genres")
-    private Set<User> users;
-
-    public Long getGenreId() {
-        return genreId;
-    }
-
-    public void setGenreId(Long genreId) {
-        this.genreId = genreId;
-    }
-
-    public String getGenreName() {
-        return genreName;
-    }
-
-    public void setGenreName(String genreName) {
-        this.genreName = genreName;
-    }
-
+    private final Set<User> users = new HashSet<>();
 
 }

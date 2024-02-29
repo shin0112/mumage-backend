@@ -33,10 +33,7 @@ public class LikesController {
                                @PathVariable("userId") Long userId) throws NoResultException {
         User user = UserService.findById(userId).orElseThrow(() -> new NoResultException("잘못된 User 정보 입니다."));
         Posts posts = postsService.findById(postId).orElseThrow(() -> new NoResultException("잘못된 Post 정보 입니다."));
-        Likes likes = Likes.builder() // 유저와 게시글 id에 맞게 like 객체 생성
-                .posts(posts)
-                .user(user)
-                .build();
+        Likes likes = new Likes(posts, user);
 
         likesService.save(likes);
 
