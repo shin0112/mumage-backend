@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,13 +33,13 @@ public class Song {
 
     @OneToMany(mappedBy = "song")
     @JsonManagedReference
-    private List<Posts> posts = new ArrayList<>();
+    private final List<Posts> posts = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "song_genre",
             joinColumns = @JoinColumn(name = "song_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private Set<Genre> genres;
+    private final Set<Genre> genres = new HashSet<>();
 
     @Builder
     public Song(String songName, String singer, String trackUrl, String albumName){
