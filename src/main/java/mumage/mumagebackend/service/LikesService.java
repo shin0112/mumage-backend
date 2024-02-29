@@ -24,14 +24,14 @@ public class LikesService {
 
         likesRepository.save(likes);
 
-        likes.getUser().getLikesList().add(likes);
+        likes.getUser().getLikes().add(likes);
         likes.getPosts().getLikesList().add(likes);
     }
 
     @Transactional
     public void delete(Likes likes) {
 
-        likes.getUser().getLikesList().remove(likes);
+        likes.getUser().getLikes().remove(likes);
         likes.getPosts().getLikesList().remove(likes);
 
         likesRepository.delete(likes);

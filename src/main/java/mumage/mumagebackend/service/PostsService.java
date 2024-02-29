@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mumage.mumagebackend.domain.*;
 import mumage.mumagebackend.dto.PostDto;
-import mumage.mumagebackend.dto.PostsResponseDto;
 import mumage.mumagebackend.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +32,7 @@ public class PostsService {
     @Transactional
     public void save(Posts posts){
         postsRepository.save(posts);
-        posts.getUser().getPostsList().add(posts);
+        posts.getUser().getPosts().add(posts);
     }
 
     @Transactional
@@ -43,7 +42,7 @@ public class PostsService {
 
     @Transactional
     public void delete(Posts posts){
-        posts.getUser().getPostsList().remove(posts); //유저가 작성한 게시글 목록에서 이 글 삭제
+        posts.getUser().getPosts().remove(posts); //유저가 작성한 게시글 목록에서 이 글 삭제
         postsRepository.delete(posts);
     }
 

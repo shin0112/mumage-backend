@@ -40,7 +40,7 @@ public class CommentsService {
         commentsRepository.save(comments);
 
         posts.getCommentsList().add(comments);
-        user.getCommentsList().add(comments);
+        user.getComments().add(comments);
     }
 
     // 아이디에 해당하는 댓글 db에서 삭제
@@ -49,7 +49,7 @@ public class CommentsService {
         Comments comments = commentsRepository.findById(commentId).orElseGet(Comments::new);
 
         comments.getPosts().getCommentsList().remove(comments);
-        comments.getUser().getCommentsList().remove(comments);
+        comments.getUser().getComments().remove(comments);
 
         commentsRepository.delete(comments);
     }

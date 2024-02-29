@@ -138,7 +138,7 @@ public class PostsController {
         model.addAttribute("postDtoList", postDtoList);
 
         User user = userService.findById(userId).orElseThrow(() -> new NoResultException("잘못된 Post 정보 입니다.")); // 유저가 누른 좋아요 size 구하기 위해 user 가져옴
-        PageDto pageDto = new PageDto(page, 5, user.getLikesList().size(), 5); // 페이지네이션
+        PageDto pageDto = new PageDto(page, 5, user.getLikes().size(), 5); // 페이지네이션
         model.addAttribute("pageDto", pageDto);
 
         return "post/likeList";
