@@ -39,7 +39,7 @@ public class CommentsService {
 
         commentsRepository.save(comments);
 
-        posts.getCommentsList().add(comments);
+        posts.getComments().add(comments);
         user.getComments().add(comments);
     }
 
@@ -48,7 +48,7 @@ public class CommentsService {
     public void delete(Long commentId){
         Comments comments = commentsRepository.findById(commentId).orElseGet(Comments::new);
 
-        comments.getPosts().getCommentsList().remove(comments);
+        comments.getPosts().getComments().remove(comments);
         comments.getUser().getComments().remove(comments);
 
         commentsRepository.delete(comments);

@@ -25,14 +25,14 @@ public class LikesService {
         likesRepository.save(likes);
 
         likes.getUser().getLikes().add(likes);
-        likes.getPosts().getLikesList().add(likes);
+        likes.getPosts().getLikes().add(likes);
     }
 
     @Transactional
     public void delete(Likes likes) {
 
         likes.getUser().getLikes().remove(likes);
-        likes.getPosts().getLikesList().remove(likes);
+        likes.getPosts().getLikes().remove(likes);
 
         likesRepository.delete(likes);
     }
@@ -44,7 +44,7 @@ public class LikesService {
 
     // 게시글에 좋아요 누른 user id 목록 반환
     public Set<Long> findLikeUserIdList(Posts posts){
-        Set<Likes> byPosts = posts.getLikesList(); // posts에 fetch join을 통해 미리 가져온 좋아요 목록을 활용한다.
+        Set<Likes> byPosts = posts.getLikes(); // posts에 fetch join을 통해 미리 가져온 좋아요 목록을 활용한다.
         Set<Long> likesUserIdList = new HashSet<>();
         for (Likes likes : byPosts) {
             likesUserIdList.add(likes.getUser().getUserId());
